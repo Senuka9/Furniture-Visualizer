@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectLibraryManager">
+    <library name="gson-2.10.1">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/gson-2.10.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="mongodb-driver-sync-4.11.1">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/mongodb-driver-sync-4.11.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="mongodb-driver-core-4.11.1">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/mongodb-driver-core-4.11.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+  </component>
+</project>
+

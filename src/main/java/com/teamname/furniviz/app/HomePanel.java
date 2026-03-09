@@ -37,7 +37,7 @@ public class HomePanel extends JPanel {
 
         // Temporary actions
         roomButton.addActionListener(e -> 
-            JOptionPane.showMessageDialog(this, "Room module not implemented yet")
+            navigator.showRoom()
         );
 
         furnitureButton.addActionListener(e -> 
