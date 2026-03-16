@@ -3,6 +3,7 @@ package com.teamname.furniviz.app;
 import com.teamname.furniviz.room.RoomFormPanel;
 import com.teamname.furniviz.room.RoomController;
 import com.teamname.furniviz.room.RoomTemplatesPage;
+import com.teamname.furniviz.furniture.FurnitureLibraryPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,6 +14,7 @@ public class Navigator extends JPanel {
     private DesignState designState;
     private RoomFormPanel roomFormPanel;
     private RoomTemplatesPage roomTemplatesPage;
+    private FurnitureLibraryPanel furnitureLibraryPanel;
 
     public Navigator() {
         layout = new CardLayout();
@@ -36,6 +38,14 @@ public class Navigator extends JPanel {
                 () -> showRoom()
         );
         add(roomTemplatesPage, "ROOMS");
+
+        // Create and add FURNITURE panel
+        this.furnitureLibraryPanel = new FurnitureLibraryPanel(
+                designState,
+                () -> showHome(),
+                () -> show2D()
+        );
+        add(furnitureLibraryPanel, "FURNITURE");
     }
 
     private JPanel createHomePanel() {
@@ -79,7 +89,7 @@ public class Navigator extends JPanel {
         // Temporary actions
         roomButton.addActionListener(e -> showRoom());
         roomsButton.addActionListener(e -> showRooms());
-        furnitureButton.addActionListener(e -> JOptionPane.showMessageDialog(panel, "Furniture module not implemented yet"));
+        furnitureButton.addActionListener(e -> showFurniture());
         editor2DButton.addActionListener(e -> JOptionPane.showMessageDialog(panel, "2D Editor not implemented yet"));
         view3DButton.addActionListener(e -> JOptionPane.showMessageDialog(panel, "3D View not implemented yet"));
         portfolioButton.addActionListener(e -> JOptionPane.showMessageDialog(panel, "Portfolio not implemented yet"));
@@ -104,8 +114,15 @@ public class Navigator extends JPanel {
         layout.show(this, "ROOMS");
     }
 
+    public void showFurniture() {
+        layout.show(this, "FURNITURE");
+    }
+
+    public void show2D() {
+        JOptionPane.showMessageDialog(this, "2D Editor will be implemented by Member 4");
+    }
+
     // Later you will add:
-    // show2D()
     // show3D()
     // showPortfolio()
 }
