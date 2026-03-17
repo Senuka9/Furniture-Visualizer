@@ -3,6 +3,9 @@ package com.teamname.furniviz.app;
 import com.teamname.furniviz.room.RoomFormPanel;
 import com.teamname.furniviz.room.RoomController;
 import com.teamname.furniviz.room.RoomTemplatesPage;
+import com.teamname.furniviz.furniture.FurnitureLibraryPanel;
+import com.teamname.furniviz.editor2d.Editor2DPanel;
+import com.teamname.furniviz.editor2d.RoomSelectorPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,6 +16,9 @@ public class Navigator extends JPanel {
     private DesignState designState;
     private RoomFormPanel roomFormPanel;
     private RoomTemplatesPage roomTemplatesPage;
+    private FurnitureLibraryPanel furnitureLibraryPanel;
+    private Editor2DPanel editor2DPanel;
+    private RoomSelectorPanel roomSelectorPanel;
 
     public Navigator() {
         layout = new CardLayout();
@@ -33,9 +39,32 @@ public class Navigator extends JPanel {
         // Create and add ROOMS panel for viewing all templates
         this.roomTemplatesPage = new RoomTemplatesPage(
                 () -> showHome(),
-                () -> showRoom()
+                room -> showEditor2D(room)  // When room selected, go to 2D editor
         );
         add(roomTemplatesPage, "ROOMS");
+
+        // Create and add FURNITURE panel
+        this.furnitureLibraryPanel = new FurnitureLibraryPanel(
+                designState,
+                () -> showHome(),
+                () -> show2D()
+        );
+        add(furnitureLibraryPanel, "FURNITURE");
+
+        // Create and add 2D EDITOR panel
+        this.editor2DPanel = new Editor2DPanel(
+                designState,
+                () -> showHome(),
+                () -> show3D()
+        );
+        add(editor2DPanel, "EDITOR_2D");
+
+        // Create and add ROOM SELECTOR panel for 2D editor
+        this.roomSelectorPanel = new RoomSelectorPanel(
+                room -> showEditor2D(room),
+                () -> showHome()
+        );
+        add(roomSelectorPanel, "ROOM_SELECTOR_2D");
     }
 
     private JPanel createHomePanel() {
@@ -76,12 +105,12 @@ public class Navigator extends JPanel {
         panel.add(view3DButton);
         panel.add(portfolioButton);
 
-        // Temporary actions
+        // Button actions
         roomButton.addActionListener(e -> showRoom());
         roomsButton.addActionListener(e -> showRooms());
-        furnitureButton.addActionListener(e -> JOptionPane.showMessageDialog(panel, "Furniture module not implemented yet"));
-        editor2DButton.addActionListener(e -> JOptionPane.showMessageDialog(panel, "2D Editor not implemented yet"));
-        view3DButton.addActionListener(e -> JOptionPane.showMessageDialog(panel, "3D View not implemented yet"));
+        furnitureButton.addActionListener(e -> showFurniture());
+        editor2DButton.addActionListener(e -> showRoomSelector());
+        view3DButton.addActionListener(e -> JOptionPane.showMessageDialog(panel, "3D View will be implemented by Member 5"));
         portfolioButton.addActionListener(e -> JOptionPane.showMessageDialog(panel, "Portfolio not implemented yet"));
 
         return panel;
@@ -104,8 +133,26 @@ public class Navigator extends JPanel {
         layout.show(this, "ROOMS");
     }
 
-    // Later you will add:
-    // show2D()
-    // show3D()
-    // showPortfolio()
+    public void showFurniture() {
+        layout.show(this, "FURNITURE");
+    }
+
+    public void showRoomSelector() {
+        roomSelectorPanel.refresh();  // Refresh list before showing
+        layout.show(this, "ROOM_SELECTOR_2D");
+    }
+
+    public void show2D() {
+        layout.show(this, "EDITOR_2D");
+    }
+
+    public void showEditor2D(com.teamname.furniviz.room.Room room) {
+        designState.setRoom(room);
+        editor2DPanel.setRoom(room);
+        layout.show(this, "EDITOR_2D");
+    }
+
+    public void show3D() {
+        JOptionPane.showMessageDialog(this, "3D View will be implemented by Member 5");
+    }
 }
