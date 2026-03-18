@@ -1,5 +1,7 @@
 package com.teamname.furniviz.app;
 
+import com.teamname.furniviz.auth.Session;
+import com.teamname.furniviz.auth.LoginFrame;
 import com.teamname.furniviz.room.RoomFormPanel;
 import com.teamname.furniviz.room.RoomController;
 import com.teamname.furniviz.room.RoomTemplatesPage;
@@ -26,26 +28,21 @@ public class Navigator extends JPanel {
         layout = new CardLayout();
         setLayout(layout);
 
-        // Create shared DesignState
         this.designState = new DesignState();
 
-        // Add HOME panel
         JPanel homePanel = createHomePanel();
         add(homePanel, "HOME");
 
-        // Create and add ROOM panel with back button callback
         RoomController roomController = new RoomController(designState);
         this.roomFormPanel = new RoomFormPanel(roomController, () -> showHome(), () -> showRooms());
         add(roomFormPanel, "ROOM");
 
-        // Create and add ROOMS panel for viewing all templates
         this.roomTemplatesPage = new RoomTemplatesPage(
                 () -> showHome(),
-                room -> showEditor2D(room)  // When room selected, go to 2D editor
+                room -> showEditor2D(room)
         );
         add(roomTemplatesPage, "ROOMS");
 
-        // Create and add FURNITURE panel
         this.furnitureLibraryPanel = new FurnitureLibraryPanel(
                 designState,
                 () -> showHome(),
@@ -53,7 +50,6 @@ public class Navigator extends JPanel {
         );
         add(furnitureLibraryPanel, "FURNITURE");
 
-        // Create and add 2D EDITOR panel
         this.editor2DPanel = new Editor2DPanel(
                 designState,
                 () -> showHome(),
@@ -61,14 +57,12 @@ public class Navigator extends JPanel {
         );
         add(editor2DPanel, "EDITOR_2D");
 
-        // Create and add ROOM SELECTOR panel for 2D editor
         this.roomSelectorPanel = new RoomSelectorPanel(
                 room -> showEditor2D(room),
                 () -> showHome()
         );
         add(roomSelectorPanel, "ROOM_SELECTOR_2D");
 
-        // Create and add 3D VIEW panel
         this.view3DPanel = new View3DPanel(
                 designState,
                 () -> show2D()
@@ -81,15 +75,35 @@ public class Navigator extends JPanel {
         panel.setBackground(new Color(245, 245, 245));
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // NORTH: Title
+        // NORTH: User info and logout
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBackground(new Color(245, 245, 245));
+        
+        com.teamname.furniviz.accounts.User currentUser = Session.getInstance().getCurrentUser();
+        String userName = currentUser != null ? currentUser.getFullName() : "User";
+        JLabel userLabel = new JLabel("Welcome, " + userName);
+        userLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        headerPanel.add(userLabel, BorderLayout.WEST);
+        
+        JButton logoutBtn = new JButton("Logout");
+        logoutBtn.setFont(new Font("Arial", Font.PLAIN, 12));
+        logoutBtn.addActionListener(e -> handleLogout());
+        headerPanel.add(logoutBtn, BorderLayout.EAST);
+        
+        panel.add(headerPanel, BorderLayout.NORTH);
+
+        // CENTER: Title and buttons
+        JPanel centerPanel = new JPanel(new BorderLayout(20, 20));
+        centerPanel.setBackground(new Color(245, 245, 245));
+        
         JLabel title = new JLabel("Furniture Visualizer", SwingConstants.CENTER);
         title.setFont(new Font("Arial", Font.BOLD, 32));
-        title.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
-        panel.add(title, BorderLayout.NORTH);
+        centerPanel.add(title, BorderLayout.NORTH);
 
-        // CENTER: Button panel only
         JPanel buttonPanel = createButtonPanel();
-        panel.add(buttonPanel, BorderLayout.CENTER);
+        centerPanel.add(buttonPanel, BorderLayout.CENTER);
+        
+        panel.add(centerPanel, BorderLayout.CENTER);
 
         return panel;
     }
@@ -114,7 +128,6 @@ public class Navigator extends JPanel {
         panel.add(view3DButton);
         panel.add(portfolioButton);
 
-        // Button actions
         roomButton.addActionListener(e -> showRoom());
         roomsButton.addActionListener(e -> showRooms());
         furnitureButton.addActionListener(e -> showFurniture());
@@ -123,6 +136,17 @@ public class Navigator extends JPanel {
         portfolioButton.addActionListener(e -> JOptionPane.showMessageDialog(panel, "Portfolio not implemented yet"));
 
         return panel;
+    }
+
+    private void handleLogout() {
+        Session.getInstance().logout();
+        SwingUtilities.invokeLater(() -> {
+            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+            topFrame.dispose();
+            
+            LoginFrame loginFrame = new LoginFrame();
+            loginFrame.setVisible(true);
+        });
     }
 
     public DesignState getDesignState() {
@@ -147,7 +171,7 @@ public class Navigator extends JPanel {
     }
 
     public void showRoomSelector() {
-        roomSelectorPanel.refresh();  // Refresh list before showing
+        roomSelectorPanel.refresh();
         layout.show(this, "ROOM_SELECTOR_2D");
     }
 
@@ -163,7 +187,7 @@ public class Navigator extends JPanel {
 
     public void show3D() {
         if (view3DPanel != null) {
-            view3DPanel.refresh();  // Update from current DesignState
+            view3DPanel.refresh();
         }
         layout.show(this, "VIEW_3D");
     }
