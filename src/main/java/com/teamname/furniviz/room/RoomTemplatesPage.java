@@ -27,11 +27,17 @@ public class RoomTemplatesPage extends JPanel {
     private List<Room> allRooms;
     private RoomRepository roomRepository;
     private Runnable onBackPressed;
-    private Runnable onEditPressed;
+    private RoomCallback onRoomSelected;
 
-    public RoomTemplatesPage(Runnable onBackPressed, Runnable onEditPressed) {
+    // Functional interface for room selection callback
+    @FunctionalInterface
+    public interface RoomCallback {
+        void onRoomSelected(Room room);
+    }
+
+    public RoomTemplatesPage(Runnable onBackPressed, RoomCallback onRoomSelected) {
         this.onBackPressed = onBackPressed;
-        this.onEditPressed = onEditPressed;
+        this.onRoomSelected = onRoomSelected;
         this.roomRepository = new RoomRepository();
         initComponents();
         initUI();
@@ -308,8 +314,8 @@ public class RoomTemplatesPage extends JPanel {
     }
 
     private void editRoom(Room room) {
-        if (onEditPressed != null) {
-            onEditPressed.run();
+        if (onRoomSelected != null) {
+            onRoomSelected.onRoomSelected(room);
         }
     }
 
