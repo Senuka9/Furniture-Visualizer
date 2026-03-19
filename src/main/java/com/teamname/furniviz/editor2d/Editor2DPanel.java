@@ -180,6 +180,17 @@ public class Editor2DPanel extends JPanel {
         });
         buttonPanel.add(view3DButton);
 
+        // Save Design Button
+        JButton saveDesignButton = new JButton("SAVE DESIGN");
+        saveDesignButton.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        saveDesignButton.setPreferredSize(new Dimension(130, 35));
+        saveDesignButton.setBackground(new Color(156, 39, 176));
+        saveDesignButton.setForeground(Color.WHITE);
+        saveDesignButton.setFocusPainted(false);
+        saveDesignButton.setBorderPainted(false);
+        saveDesignButton.addActionListener(e -> saveCurrentDesign());
+        buttonPanel.add(saveDesignButton);
+
         panel.add(buttonPanel, BorderLayout.EAST);
         return panel;
     }
@@ -290,6 +301,61 @@ public class Editor2DPanel extends JPanel {
         dialogPanel.add(buttonPanel, BorderLayout.SOUTH);
         furnitureDialog.add(dialogPanel);
         furnitureDialog.setVisible(true);
+    }
+
+    private void saveCurrentDesign() {
+        // Get design name from user
+        String designName = JOptionPane.showInputDialog(
+                this,
+                "Enter a name for this design:",
+                "Save Design",
+                JOptionPane.PLAIN_MESSAGE);
+        
+        if (designName == null || designName.trim().isEmpty()) {
+            return; // User cancelled
+        }
+        
+        try {
+            // Get current data from DesignState
+            Room room = designState.getRoom();
+            java.util.List<FurnitureItem> items = designState.getFurnitureItems();
+            
+            if (room == null) {
+                JOptionPane.showMessageDialog(this, "No room to save!",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            // Get user ID from Session
+            String userId = com.teamname.furniviz.auth.Session.getInstance()
+                    .getCurrentUser().getUserId();
+            
+            // Create Design object
+            com.teamname.furniviz.storage.DesignModel design = 
+                    new com.teamname.furniviz.storage.DesignModel(
+                    userId,
+                    designName,
+                    room,
+                    items
+            );
+            
+            // Save to storage
+            com.teamname.furniviz.storage.DesignStorage storage = 
+                    new com.teamname.furniviz.storage.DesignStorage();
+            if (storage.saveDesign(design)) {
+                JOptionPane.showMessageDialog(this, 
+                        "✓ Design '" + designName + "' saved successfully!",
+                        "Success", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Error saving design",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                    "Error: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
     }
 
     // Custom cell renderer for furniture list (same as in FurnitureLibraryPanel)

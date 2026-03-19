@@ -97,7 +97,6 @@
                     <mainClass>com.teamname.furniviz.auth.LoginLauncher</mainClass>
                 </configuration>
             </plugin>
-        </plugins>
     </build>
 
     <dependencies>
@@ -119,7 +118,8 @@
             <groupId>at.favre.lib</groupId>
             <artifactId>bcrypt</artifactId>
             <version>0.10.2</version>
-        </dependency>
+
+        <!-- Java 3D for 3D rendering -->
 
         <!-- Bytes library (required by BCrypt) -->
         <dependency>
@@ -127,8 +127,6 @@
             <artifactId>bytes</artifactId>
             <version>1.6.1</version>
         </dependency>
-
-        <!-- Java 3D for 3D rendering -->
         <dependency>
             <groupId>org.jogamp.jogl</groupId>
             <artifactId>jogl-all</artifactId>

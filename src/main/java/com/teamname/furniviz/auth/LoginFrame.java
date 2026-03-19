@@ -66,6 +66,17 @@ public class LoginFrame extends JFrame {
                     "Error", 
                     JOptionPane.ERROR_MESSAGE);
             }
+            // For now, just show success message
+            JOptionPane.showMessageDialog(this, 
+                "Login successful!\n\nWelcome " + Session.getInstance().getCurrentUser().getFullName() + 
+                "\n\nThe main app window will open when fully integrated.",
+                "Login Success", 
+                JOptionPane.INFORMATION_MESSAGE);
+            
+            // You can uncomment this once MainFrame is compiled:
+            // com.teamname.furniviz.app.MainFrame mainFrame = new com.teamname.furniviz.app.MainFrame();
+            // mainFrame.setVisible(true);
+            // LoginFrame.this.dispose();
         });
     }
 

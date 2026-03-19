@@ -9,6 +9,7 @@ import com.teamname.furniviz.furniture.FurnitureLibraryPanel;
 import com.teamname.furniviz.editor2d.Editor2DPanel;
 import com.teamname.furniviz.editor2d.RoomSelectorPanel;
 import com.teamname.furniviz.renderer3d.View3DPanel;
+import com.teamname.furniviz.portfolio.PortfolioPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,6 +24,7 @@ public class Navigator extends JPanel {
     private Editor2DPanel editor2DPanel;
     private RoomSelectorPanel roomSelectorPanel;
     private View3DPanel view3DPanel;
+    private PortfolioPanel portfolioPanel;
 
     public Navigator() {
         layout = new CardLayout();
@@ -68,6 +70,12 @@ public class Navigator extends JPanel {
                 () -> show2D()
         );
         add(view3DPanel, "VIEW_3D");
+
+        this.portfolioPanel = new PortfolioPanel(
+                () -> showHome(),
+                this::refreshPortfolio
+        );
+        add(portfolioPanel, "PORTFOLIO");
     }
 
     private JPanel createHomePanel() {
@@ -133,7 +141,7 @@ public class Navigator extends JPanel {
         furnitureButton.addActionListener(e -> showFurniture());
         editor2DButton.addActionListener(e -> showRoomSelector());
         view3DButton.addActionListener(e -> show3D());
-        portfolioButton.addActionListener(e -> JOptionPane.showMessageDialog(panel, "Portfolio not implemented yet"));
+        portfolioButton.addActionListener(e -> showPortfolio());
 
         return panel;
     }
@@ -190,5 +198,14 @@ public class Navigator extends JPanel {
             view3DPanel.refresh();
         }
         layout.show(this, "VIEW_3D");
+    }
+
+    public void showPortfolio() {
+        layout.show(this, "PORTFOLIO");
+    }
+
+    public void refreshPortfolio() {
+        // Called when portfolio needs to be refreshed
+        // (e.g., after loading a design from portfolio)
     }
 }
