@@ -1,6 +1,7 @@
 package com.teamname.furniviz.room;
 
-public class RoomShape {
-    // Room shape definitions
-    // Member 2
+public enum RoomShape {
+    RECTANGLE,
+    SQUARE,
+    L_SHAPE
 }
